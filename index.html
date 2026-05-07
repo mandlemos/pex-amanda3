@@ -3,419 +3,189 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Arvia | Sistema de Gestão</title>
-    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <title>Sistema CAU - Arvia Tecnologia</title>
     <style>
         :root {
-            --arvia-blue: #003366;
-            --arvia-orange: #FF8C00;
-            --arvia-orange-light: #fff4e6;
-            --bg-body: #f4f7fa;
-            --sidebar-width: 280px;
-            --card-shadow: 0 10px 30px -5px rgba(0, 51, 102, 0.08);
-            --transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+            --primary-color: #2c3e50;
+            --secondary-color: #3498db;
+            --bg-color: #f4f7f6;
+            --text-color: #333;
+            --white: #ffffff;
         }
 
-        * { margin: 0; padding: 0; box-sizing: border-box; }
-
-        body { 
-            font-family: 'Plus Jakarta Sans', sans-serif; 
-            background: var(--bg-body); 
-            color: #1a202c; 
-            display: flex; 
-            height: 100vh;
-            overflow: hidden;
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
         }
 
-        /* Sidebar Elegante */
-        nav { 
-            width: var(--sidebar-width); 
-            background: linear-gradient(180deg, #002a54 0%, var(--arvia-blue) 100%);
-            color: white; 
-            display: flex; 
-            flex-direction: column;
-            z-index: 10;
+        body {
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            line-height: 1.6;
+            padding: 20px;
         }
 
-        .nav-header { 
-            padding: 50px 35px; 
-            background: rgba(255,255,255,0.03);
-            border-bottom: 1px solid rgba(255,255,255,0.05);
+        .container {
+            max-width: 1000px;
+            margin: 0 auto;
         }
 
-        .nav-header h2 { 
-            font-weight: 800; 
-            font-size: 28px; 
-            letter-spacing: -1px;
-            display: flex;
-            align-items: center;
-        }
-
-        .nav-header h2 span { color: var(--arvia-orange); }
-
-        nav ul { list-style: none; margin-top: 30px; }
-
-        nav ul li { 
-            margin: 8px 20px;
-            padding: 15px 20px; 
-            cursor: pointer; 
-            border-radius: 12px;
-            transition: var(--transition);
-            font-weight: 500;
-            display: flex;
-            align-items: center;
-            font-size: 15px;
-            color: rgba(255,255,255,0.7);
-        }
-
-        nav ul li:hover { background: rgba(255,255,255,0.08); color: white; }
-
-        nav ul li.active { 
-            background: var(--arvia-orange); 
-            color: white; 
-            box-shadow: 0 4px 15px rgba(255, 140, 0, 0.4);
-        }
-
-        /* Conteúdo Principal */
-        main { 
-            flex: 1; 
-            padding: 60px; 
-            overflow-y: auto;
-            background: radial-gradient(circle at top right, #ffffff, var(--bg-body));
-        }
-
-        .header-title h1 { 
-            font-size: 32px; 
-            font-weight: 800; 
-            color: var(--arvia-blue);
-            margin-bottom: 8px;
-        }
-
-        .header-title p { color: #718096; margin-bottom: 45px; }
-
-        .page { display: none; }
-        .page.active { display: block; animation: pageIn 0.6s ease; }
-
-        @keyframes pageIn {
-            from { opacity: 0; transform: translateY(20px); }
-            to { opacity: 1; transform: translateY(0); }
-        }
-
-        /* Cards Estilizados */
-        .card { 
-            background: white; 
-            padding: 35px; 
-            border-radius: 24px; 
-            box-shadow: var(--card-shadow); 
-            border: 1px solid rgba(255,255,255,0.8);
+        header {
+            text-align: center;
             margin-bottom: 30px;
         }
 
-        h3 { 
-            font-size: 18px; 
-            font-weight: 700; 
-            margin-bottom: 30px; 
-            color: #2d3748;
-            display: flex;
-            align-items: center;
-        }
+        h1 { color: var(--primary-color); margin-bottom: 10px; }
 
-        h3::before {
-            content: '';
-            width: 8px; height: 8px;
-            background: var(--arvia-orange);
-            border-radius: 50%;
-            margin-right: 12px;
-            box-shadow: 0 0 10px var(--arvia-orange);
-        }
-
-        /* Tabelas Modernas */
-        table { width: 100%; border-collapse: separate; border-spacing: 0 12px; margin-top: -12px; }
-        th { text-align: left; padding: 0 25px 10px 25px; color: #a0aec0; font-size: 12px; text-transform: uppercase; letter-spacing: 1px; }
-        
-        td { 
-            background: #ffffff; 
-            padding: 22px 25px; 
-            border-top: 1px solid #f1f5f9;
-            border-bottom: 1px solid #f1f5f9;
-            font-size: 15px;
-        }
-
-        td:first-child { border-left: 1px solid #f1f5f9; border-radius: 18px 0 0 18px; }
-        td:last-child { border-right: 1px solid #f1f5f9; border-radius: 0 18px 18px 0; }
-
-        /* Status & Badges */
-        .status-badge { 
-            padding: 8px 16px; 
-            border-radius: 10px; 
-            font-size: 11px; 
-            font-weight: 700; 
-            letter-spacing: 0.5px;
-            text-transform: uppercase;
-        }
-
-        .sla-critico { border-left: 5px solid #ff4d4d !important; }
-        .sla-alerta { border-left: 5px solid var(--arvia-orange) !important; }
-        .sla-normal { border-left: 5px solid #00d084 !important; }
-
-        /* Formulários Customizados */
-        .grid-form { display: grid; grid-template-columns: 1fr 1fr; gap: 25px; }
-        input, select, textarea { 
-            width: 100%;
-            padding: 16px; 
-            border: 2px solid #edf2f7; 
-            border-radius: 14px; 
-            font-family: inherit;
-            font-size: 15px;
-            transition: var(--transition);
-            background: #f8fafc;
-        }
-
-        input:focus { border-color: var(--arvia-orange); outline: none; background: white; box-shadow: 0 0 0 4px var(--arvia-orange-light); }
-
-        .btn-primary { 
-            background: var(--arvia-orange); 
-            color: white; 
-            padding: 18px; 
-            border: none; 
-            border-radius: 14px; 
-            font-weight: 700; 
-            cursor: pointer; 
-            transition: var(--transition);
-            grid-column: span 2;
-            font-size: 16px;
-        }
-
-        .btn-primary:hover { 
-            transform: translateY(-3px); 
-            box-shadow: 0 12px 24px rgba(255, 140, 0, 0.3);
-            filter: brightness(1.1);
-        }
-
-        .btn-action {
-            background: white;
-            border: 2px solid #edf2f7;
-            padding: 8px 15px;
-            border-radius: 10px;
+        /* Botão Visão Geral com sombreamento reduzido */
+        .btn-overview {
+            background-color: var(--white);
+            color: var(--primary-color);
+            border: 1px solid #ddd;
+            padding: 10px 20px;
+            border-radius: 5px;
             cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.05); /* Sombreamento diminuído e mais suave */
             font-weight: 600;
-            color: var(--arvia-blue);
-            transition: var(--transition);
+            margin-bottom: 20px;
         }
 
-        .btn-action:hover { border-color: var(--arvia-orange); color: var(--arvia-orange); }
+        .btn-overview:hover {
+            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+            background-color: #f9f9f9;
+        }
 
-        /* Grid de Gráficos */
-        .charts-grid { display: grid; grid-template-columns: 1.2fr 1fr; gap: 30px; }
+        /* Grid de Chamados (Responsivo) */
+        .grid-chamados {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 20px;
+        }
 
-        /* Scrollbar Personalizada */
-        ::-webkit-scrollbar { width: 8px; }
-        ::-webkit-scrollbar-track { background: #f1f1f1; }
-        ::-webkit-scrollbar-thumb { background: #cbd5e0; border-radius: 10px; }
-        ::-webkit-scrollbar-thumb:hover { background: #a0aec0; }
+        .card {
+            background: var(--white);
+            padding: 20px;
+            border-radius: 8px;
+            border-left: 5px solid var(--secondary-color);
+            box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+        }
+
+        .status {
+            display: inline-block;
+            padding: 4px 8px;
+            border-radius: 4px;
+            font-size: 0.85em;
+            font-weight: bold;
+            background: #e0e0e0;
+        }
+
+        .status-andamento { background: #ffeaa7; color: #d35400; }
+        .status-concluido { background: #55efc4; color: #00b894; }
+
+        /* Formulário de Feedback */
+        .feedback-set {
+            margin-top: 15px;
+            padding-top: 15px;
+            border-top: 1px solid #eee;
+        }
+
+        input, textarea {
+            width: 100%;
+            padding: 10px;
+            margin: 10px 0;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+        }
+
+        button.send-btn {
+            background-color: var(--secondary-color);
+            color: white;
+            border: none;
+            padding: 10px;
+            width: 100%;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+
+        /* MEDIA QUERIES - VERSÃO TELEMÓVEL (MOBILE) */
+        @media (max-width: 600px) {
+            body { padding: 10px; }
+            h1 { font-size: 1.5rem; }
+            .grid-chamados { grid-template-columns: 1fr; }
+            .btn-overview { width: 100%; text-align: center; }
+        }
     </style>
 </head>
 <body>
 
-<nav>
-    <div class="nav-header">
-        <h2>ARVIA<span>.</span></h2>
-        <p style="font-size: 11px; color: rgba(255,255,255,0.4); margin-top: 5px; text-transform: uppercase; letter-spacing: 2px;">Gestão Inteligente</p>
-    </div>
-    <ul>
-        <li onclick="showPage('dashboard')" id="btn-dashboard" class="active">Visão Geral</li>
-        <li onclick="showPage('chamado')" id="btn-chamado">Registrar OS</li>
-        <li onclick="showPage('relatorios')" id="btn-relatorios">Relatórios Ativos</li>
-    </ul>
-</nav>
+    <div class="container">
+        <header>
+            <h1>Sistema CAU</h1>
+            <p>Arvia Tecnologia - Gestão de Atividades</p>
+        </header>
 
-<main>
-    <div id="dashboard" class="page active">
-        <div class="header-title">
-            <h1>Dashboard</h1>
-            <p>Controle de atividades em tempo real para Arvia Tecnologia.</p>
-        </div>
-        
-        <div class="card">
-            <h3>Fila de Trabalho e SLA</h3>
-            <table>
-                <thead>
-                    <tr>
-                        <th>Atividade / Cliente</th>
-                        <th>Especialista</th>
-                        <th>Data Limite</th>
-                        <th>Status</th>
-                        <th>Gerenciar</th>
-                    </tr>
-                </thead>
-                <tbody id="tabelaCorpo"></tbody>
-            </table>
+        <button class="btn-overview" onclick="carregarChamados()">🔄 Atualizar Visão Geral</button>
+
+        <div id="lista-chamados" class="grid-chamados">
+            <p>A carregar chamados...</p>
         </div>
     </div>
 
-    <div id="chamado" class="page">
-        <div class="header-title">
-            <h1>Novo Chamado</h1>
-            <p>Registre uma nova ordem de serviço no sistema.</p>
-        </div>
-        <div class="card" style="max-width: 900px;">
-            <form id="serviceForm" class="grid-form">
-                <div class="form-group">
-                    <label style="display:block; margin-bottom:10px; font-weight:600; font-size:14px; color:#4a5568">Tipo de Serviço</label>
-                    <select id="tipoServico" required>
-                        <option value="">Selecione o serviço</option>
-                        <option>Consultoria em TI</option>
-                        <option>Desenvolvimento de Software</option>
-                        <option>Automação e Processos</option>
-                        <option>Infraestrutura de Redes e Cloud</option>
-                        <option>Segurança da Informação</option>
-                    </select>
-                </div>
-                <div class="form-group">
-                    <label style="display:block; margin-bottom:10px; font-weight:600; font-size:14px; color:#4a5568">Técnico Responsável</label>
-                    <input type="text" id="tecnico" placeholder="Nome completo" required>
-                </div>
-                <div class="form-group">
-                    <label style="display:block; margin-bottom:10px; font-weight:600; font-size:14px; color:#4a5568">Prazo de Entrega</label>
-                    <input type="date" id="prazo" required>
-                </div>
-                <div class="form-group">
-                    <label style="display:block; margin-bottom:10px; font-weight:600; font-size:14px; color:#4a5568">Razão Social / Cliente</label>
-                    <input type="text" id="cliente" placeholder="Empresa atendida" required>
-                </div>
-                <button type="submit" class="btn-primary">Ativar Ordem de Serviço</button>
-            </form>
-        </div>
-    </div>
+    <script>
+        async function carregarChamados() {
+            try {
+                const response = await fetch('/api/servicos');
+                const dados = await response.json();
+                const container = document.getElementById('lista-chamados');
+                container.innerHTML = '';
 
-    <div id="relatorios" class="page">
-        <div class="header-title">
-            <h1>Análise e Indicadores</h1>
-            <p>Métricas de desempenho e saúde operacional.</p>
-        </div>
-        <div class="charts-grid">
-            <div class="card">
-                <h3>Carga por Especialista</h3>
-                <canvas id="chartBarras"></canvas>
-            </div>
-            <div class="card" style="text-align: center;">
-                <h3>Market Share Interno</h3>
-                <div style="padding: 20px;">
-                    <canvas id="chartPizza"></canvas>
-                </div>
-            </div>
-        </div>
-    </div>
-</main>
-
-<script>
-    let chartPizza = null;
-    let chartBarras = null;
-
-    function showPage(pageId) {
-        document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
-        document.querySelectorAll('nav li').forEach(l => l.classList.remove('active'));
-        document.getElementById(pageId).classList.add('active');
-        document.getElementById('btn-' + pageId).classList.add('active');
-        carregarDados();
-    }
-
-    async function carregarDados() {
-        const res = await fetch('/api/servicos');
-        const dados = await res.json();
-        
-        const tabela = document.getElementById('tabelaCorpo');
-        tabela.innerHTML = dados.map(s => {
-            const hoje = new Date();
-            const prazo = new Date(s.prazo);
-            const diffDias = Math.ceil((prazo - hoje) / (1000 * 60 * 60 * 24));
-            
-            let classeSLA = "sla-normal";
-            if (diffDias < 0) classeSLA = "sla-critico";
-            else if (diffDias <= 3) classeSLA = "sla-alerta";
-
-            return `
-                <tr>
-                    <td class="${classeSLA}">
-                        <div style="font-weight:700; color:var(--arvia-blue)">${s.servico}</div>
-                        <div style="font-size:12px; color:#718096; margin-top:2px">${s.cliente}</div>
-                    </td>
-                    <td style="color:#4a5568; font-weight:500">${s.tecnico}</td>
-                    <td><span style="background:#f7fafc; padding:6px 10px; border-radius:8px; font-weight:600">${prazo.toLocaleDateString('pt-BR')}</span></td>
-                    <td><span class="status-badge" style="background:${s.status === 'Concluído' ? '#c6f6d5' : '#ebf4ff'}; color:${s.status === 'Concluído' ? '#22543d' : '#2a4365'}">${s.status}</span></td>
-                    <td>
-                        ${s.status !== 'Concluído' ? `<button class="btn-action" onclick="finalizarServico(${s.id})">Finalizar</button>` : '<span style="color:#38a169; font-weight:700">OK</span>'}
-                    </td>
-                </tr>
-            `;
-        }).join('');
-
-        if (document.getElementById('relatorios').classList.contains('active')) {
-            renderizarGraficos(dados);
+                dados.forEach(item => {
+                    const statusClass = item.status === 'Concluído' ? 'status-concluido' : 'status-andamento';
+                    
+                    container.innerHTML += `
+                        <div class="card">
+                            <h3>${item.servico}</h3>
+                            <p><strong>Cliente:</strong> ${item.cliente}</p>
+                            <p><strong>Técnico:</strong> ${item.tecnico}</p>
+                            <p><strong>Prazo:</strong> ${new Date(item.prazo).toLocaleDateString()}</p>
+                            <span class="status ${statusClass}">${item.status}</span>
+                            
+                            ${item.status !== 'Concluído' ? `
+                                <div class="feedback-set">
+                                    <input type="number" id="nota-${item.id}" placeholder="Nota (0-10)" min="0" max="10">
+                                    <textarea id="text-${item.id}" placeholder="O seu feedback..."></textarea>
+                                    <button class="send-btn" onclick="enviarFeedback(${item.id})">Enviar Feedback</button>
+                                </div>
+                            ` : `<p style="margin-top:10px; color: green;">✓ Feedback enviado: ${item.nota}/10</p>`}
+                        </div>
+                    `;
+                });
+            } catch (err) {
+                console.error("Erro ao carregar:", err);
+            }
         }
-    }
 
-    async function finalizarServico(id) {
-        const nota = prompt("Qual a nota de satisfação do cliente? (0-5)");
-        if(nota !== null) {
+        async function enviarFeedback(id) {
+            const nota = document.getElementById(`nota-${id}`).value;
+            const feedback = document.getElementById(`text-${id}`).value;
+
+            if(!nota) return alert("Por favor, insira uma nota.");
+
             await fetch(`/api/servicos/${id}/feedback`, {
                 method: 'PUT',
                 headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ nota, feedback: "Finalizado pelo sistema" })
+                body: JSON.stringify({ nota, feedback })
             });
-            carregarDados();
+
+            alert("Obrigado pelo seu feedback!");
+            carregarChamados();
         }
-    }
 
-    function renderizarGraficos(dados) {
-        const catMap = {};
-        const techMap = {};
-
-        dados.forEach(d => {
-            catMap[d.servico] = (catMap[d.servico] || 0) + 1;
-            if(d.status !== "Concluído") techMap[d.tecnico] = (techMap[d.tecnico] || 0) + 1;
-        });
-
-        if (chartPizza) chartPizza.destroy();
-        if (chartBarras) chartBarras.destroy();
-
-        const ctxP = document.getElementById('chartPizza').getContext('2d');
-        chartPizza = new Chart(ctxP, {
-            type: 'doughnut',
-            data: {
-                labels: Object.keys(catMap),
-                datasets: [{ data: Object.values(catMap), backgroundColor: ['#003366', '#FF8C00', '#4A5568', '#3182CE', '#ED64A6'], borderWidth: 4 }]
-            },
-            options: { cutout: '75%', plugins: { legend: { position: 'bottom' } } }
-        });
-
-        const ctxB = document.getElementById('chartBarras').getContext('2d');
-        chartBarras = new Chart(ctxB, {
-            type: 'bar',
-            data: {
-                labels: Object.keys(techMap),
-                datasets: [{ label: 'Chamados em Aberto', data: Object.values(techMap), backgroundColor: '#FF8C00', borderRadius: 10 }]
-            },
-            options: { scales: { y: { beginAtZero: true, ticks: { stepSize: 1 } } } }
-        });
-    }
-
-    document.getElementById('serviceForm').onsubmit = async (e) => {
-        e.preventDefault();
-        const payload = {
-            servico: document.getElementById('tipoServico').value,
-            tecnico: document.getElementById('tecnico').value,
-            prazo: document.getElementById('prazo').value,
-            cliente: document.getElementById('cliente').value,
-            status: "Em Aberto"
-        };
-        await fetch('/api/servicos', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(payload) });
-        document.getElementById('serviceForm').reset();
-        showPage('dashboard');
-    };
-
-    carregarDados();
-</script>
+        // Inicia a aplicação
+        carregarChamados();
+    </script>
 </body>
 </html>

@@ -3,13 +3,14 @@ const cors = require('cors');
 const path = require('path');
 const app = express();
 
+// Middleware
 app.use(cors());
 app.use(express.json());
 
-// AJUSTE: Servindo arquivos estáticos de forma compatível com Vercel
+// Servir arquivos estáticos (Essencial para carregar o index.html e CSS)
 app.use(express.static(path.join(__dirname, '/')));
 
-// Banco de dados simulado (Baseado nos temas de Desenvolvimento de Software e Integração)
+// Banco de Dados Simulado (Alinhado aos Temas de Desenvolvimento de Software do PEX)
 let chamados = [
     { 
         id: 1, 
@@ -35,15 +36,17 @@ let chamados = [
     }
 ];
 
-// NOVA ROTA: Necessária para a Vercel carregar o seu Frontend (index.html)
+// ROTA RAIZ: Necessária para a Vercel não dar o erro "Cannot GET /"
 app.get('/', (req, res) => {
     res.sendFile(path.join(__dirname, 'index.html'));
 });
 
-// API: Listar chamados (Tema: Automação de Processos)
-app.get('/api/servicos', (req, res) => res.json(chamados));
+// API: Listar chamados (Foco em Automação de Processos)
+app.get('/api/servicos', (req, res) => {
+    res.json(chamados);
+});
 
-// API: Criar chamado
+// API: Criar novo chamado
 app.post('/api/servicos', (req, res) => {
     const novo = { 
         id: chamados.length + 1, 
@@ -56,11 +59,12 @@ app.post('/api/servicos', (req, res) => {
     res.status(201).json(novo);
 });
 
-// API: Registrar Feedback (Soft Skill: Empatia e Consciência Social)
+// API: Atualizar Feedback (Trabalha a Soft Skill de Empatia com o Usuário)
 app.put('/api/servicos/:id/feedback', (req, res) => {
     const { id } = req.params;
     const { nota, feedback } = req.body;
     const index = chamados.findIndex(s => s.id == id);
+    
     if (index !== -1) {
         chamados[index].nota = nota;
         chamados[index].feedback = feedback;
@@ -71,8 +75,11 @@ app.put('/api/servicos/:id/feedback', (req, res) => {
     }
 });
 
+// Configuração da Porta (Compatível com ambientes locais e Nuvem)
 const PORT = process.env.PORT || 3000;
-app.listen(PORT, () => console.log(`Servidor rodando na porta ${PORT}`));
+app.listen(PORT, () => {
+    console.log(`Servidor do Sistema CAU rodando na porta ${PORT}`);
+});
 
-// Exportar para funcionamento Serverless na Vercel
+// EXPORTAÇÃO: Obrigatória para o funcionamento Serverless na Vercel
 module.exports = app;
