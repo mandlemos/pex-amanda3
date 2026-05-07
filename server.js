@@ -5,15 +5,17 @@ const app = express();
 
 app.use(cors());
 app.use(express.json());
-app.use(express.static(__dirname));
 
-// Banco de dados simulado com novos campos
+// AJUSTE: Servindo arquivos estáticos de forma compatível com Vercel
+app.use(express.static(path.join(__dirname, '/')));
+
+// Banco de dados simulado (Baseado nos temas de Desenvolvimento de Software e Integração)
 let chamados = [
     { 
         id: 1, 
-        servico: "Segurança da Informação", 
+        servico: "Segurança da Informação", // Tema 4 do roteiro
         tecnico: "Mariana Costa", 
-        prazo: "2026-05-07", // Próximo ao dia atual (simulando alerta)
+        prazo: "2026-05-07", 
         status: "Em Andamento", 
         cliente: "Banco Nacional",
         feedback: null,
@@ -33,10 +35,15 @@ let chamados = [
     }
 ];
 
-// Listar chamados
+// NOVA ROTA: Necessária para a Vercel carregar o seu Frontend (index.html)
+app.get('/', (req, res) => {
+    res.sendFile(path.join(__dirname, 'index.html'));
+});
+
+// API: Listar chamados (Tema: Automação de Processos)
 app.get('/api/servicos', (req, res) => res.json(chamados));
 
-// Criar chamado
+// API: Criar chamado
 app.post('/api/servicos', (req, res) => {
     const novo = { 
         id: chamados.length + 1, 
@@ -49,7 +56,7 @@ app.post('/api/servicos', (req, res) => {
     res.status(201).json(novo);
 });
 
-// Rota para Registrar Feedback (A sugestão 2)
+// API: Registrar Feedback (Soft Skill: Empatia e Consciência Social)
 app.put('/api/servicos/:id/feedback', (req, res) => {
     const { id } = req.params;
     const { nota, feedback } = req.body;
@@ -65,4 +72,7 @@ app.put('/api/servicos/:id/feedback', (req, res) => {
 });
 
 const PORT = process.env.PORT || 3000;
-app.listen(PORT, () => console.log(`Servidor rodando em http://localhost:${PORT}`));
+app.listen(PORT, () => console.log(`Servidor rodando na porta ${PORT}`));
+
+// Exportar para funcionamento Serverless na Vercel
+module.exports = app;
